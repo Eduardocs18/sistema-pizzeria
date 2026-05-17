@@ -1,0 +1,357 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body{
+    display: flex;
+    background:
+    linear-gradient(
+    rgba(20,10,5,0.45),
+    rgba(20,10,5,0.45)
+),
+    url('https://images.unsplash.com/photo-1513104890138-7c749659a591');
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    min-height: 100vh;
+}
+
+.sidebar{
+    width: 260px;
+    min-height: 100vh;
+
+    background: rgba(25,15,10,0.82);
+
+    backdrop-filter: blur(10px);
+
+    color: white;
+
+    padding: 25px;
+
+    border-right: 2px solid #ef4444;
+}
+
+.sidebar h2{
+    margin-bottom: 30px;
+}
+
+.sidebar ul{
+    list-style: none;
+}
+
+.sidebar ul li{
+    padding: 15px 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.sidebar ul li:hover{
+    background-color: #374151;
+}
+
+.main-content{
+    flex: 1;
+    padding: 30px;
+}
+
+.cards{
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.card{
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 220px;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+}
+
+.sidebar ul li a{
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+
+.header-section{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn{
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn:hover{
+    background-color: #1d4ed8;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+table th{
+    background-color: #1f2937;
+    color: white;
+    padding: 15px;
+    text-align: left;
+}
+
+table td{
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.formulario{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.formulario input{
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 200px;
+}
+
+.btn-editar{
+    background-color: #f59e0b;
+    color: white;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-right: 5px;
+}
+
+.btn-eliminar{
+    background-color: #ef4444;
+    color: white;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.btn-editar:hover{
+    background-color: #d97706;
+}
+
+.btn-eliminar:hover{
+    background-color: #dc2626;
+}
+
+.oculto{
+    display: none;
+}
+
+table input{
+    width: 100%;
+    padding: 8px;
+}
+
+.logo-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 30px;
+
+    padding-top: 10px;
+}
+
+.logo{
+    width: 140px;
+    object-fit: contain;
+}
+
+.main-content{
+    flex: 1;
+    padding: 30px;
+    color: white;
+}
+
+.seccion{
+    background: rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(8px);
+
+    border-radius: 20px;
+
+    padding: 30px;
+
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.card{
+    background: rgba(255,255,255,0.12);
+
+    backdrop-filter: blur(10px);
+
+    color: white;
+
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+table{
+    background: rgba(255,255,255,0.08);
+
+    color: white;
+}
+
+table td{
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.formulario input,
+.formulario select{
+
+    background: rgba(255,255,255,0.1);
+
+    border: 1px solid rgba(255,255,255,0.2);
+
+    color: white;
+}
+
+.formulario input::placeholder{
+    color: rgba(255,255,255,0.7);
+}
+
+.formulario select{
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.sidebar ul li:hover{
+    background-color: #ef4444;
+    transition: 0.3s;
+}
+
+.btn{
+    background-color: #ef4444;
+}
+
+.btn:hover{
+    background-color: #dc2626;
+}
+
+.banner-bienvenida{
+
+    background:
+    linear-gradient(
+        rgba(239,68,68,0.75),
+        rgba(120,20,20,0.75)
+    );
+
+    padding: 30px;
+
+    border-radius: 20px;
+
+    margin-bottom: 30px;
+
+    color: white;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.banner-bienvenida h1{
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.banner-bienvenida p{
+    font-size: 18px;
+    opacity: 0.9;
+}
+
+.dashboard-grid{
+
+    display: grid;
+
+    grid-template-columns: 2fr 1fr;
+
+    gap: 20px;
+
+    margin-top: 30px;
+}
+
+.dashboard-box{
+
+    background: rgba(255,255,255,0.14);
+
+    backdrop-filter: blur(10px);
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.dashboard-box h2{
+    margin-bottom: 20px;
+}
+
+.stock-alertas{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.alerta-stock{
+
+    background: rgba(239,68,68,0.18);
+
+    border-left: 5px solid #ef4444;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    justify-content: space-between;
+}
+
+.pizzas-top{
+    margin-top: 30px;
+}
+
+.top-pizzas{
+
+    display: flex;
+
+    gap: 20px;
+
+    flex-wrap: wrap;
+}
+
+.pizza-rank{
+
+    background: rgba(255,255,255,0.12);
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
