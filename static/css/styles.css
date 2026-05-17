@@ -303,6 +303,8 @@ table td{
     padding: 25px;
 
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+
+    overflow: hidden;
 }
 
 .dashboard-box h2{
@@ -328,6 +330,10 @@ table td{
     display: flex;
 
     justify-content: space-between;
+
+    flex-wrap: wrap;
+    
+    gap: 10px;
 }
 
 .pizzas-top{
@@ -354,4 +360,220 @@ table td{
     font-size: 20px;
 
     font-weight: bold;
+}
+
+@media(max-width: 992px){
+
+    .sidebar{
+
+        width: 90px;
+
+        padding: 15px;
+    }
+
+    .sidebar ul li a{
+
+        font-size: 12px;
+    }
+
+    .logo{
+
+        width: 70px;
+    }
+
+    .main-content{
+
+        padding: 15px;
+    }
+
+    .cards{
+
+        flex-wrap: wrap;
+    }
+
+    .dashboard-grid{
+
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 768px){
+
+    body{
+
+        flex-direction: column;
+    }
+
+    .sidebar{
+
+        width: 100%;
+
+        min-height: auto;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+
+        border-right: none;
+
+        border-bottom: 2px solid #ef4444;
+    }
+
+    .sidebar ul{
+
+        width: 100%;
+
+        display: flex;
+
+        justify-content: center;
+
+        flex-wrap: wrap;
+
+        gap: 10px;
+    }
+
+    .sidebar ul li{
+
+        margin-bottom: 0;
+        padding: 10px 15px;
+    }
+
+    .main-content{
+
+        width: 100%;
+        padding: 15px;
+    }
+
+    .cards{
+
+        flex-direction: column;
+    }
+
+    .card{
+
+        width: 100%;
+    }
+
+    .formulario{
+
+        flex-direction: column;
+    }
+
+    .formulario input,
+    .formulario select,
+    .formulario button{
+
+        width: 100%;
+    }
+
+    table{
+
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .banner-bienvenida h1{
+
+        font-size: 28px;
+    }
+
+    .dashboard-grid{
+
+        grid-template-columns: 1fr;
+    }
+
+    .top-pizzas{
+
+        flex-direction: column;
+    }
+}
+
+.tabla-responsive{
+
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.login-body{
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    min-height: 100vh;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,0.6),
+        rgba(0,0,0,0.6)
+    ),
+    url('https://images.unsplash.com/photo-1513104890138-7c749659a591');
+
+    background-size: cover;
+    background-position: center;
+}
+
+.login-container{
+
+    width: 350px;
+
+    background: rgba(255,255,255,0.12);
+
+    backdrop-filter: blur(10px);
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    color: white;
+}
+
+.logo-login{
+
+    width: 120px;
+
+    margin-bottom: 20px;
+}
+
+.login-container form{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+    margin-top: 20px;
+}
+
+.login-container input{
+
+    padding: 12px;
+
+    border: none;
+
+    border-radius: 10px;
+}
+
+.login-container button{
+
+    background: #ef4444;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
 }

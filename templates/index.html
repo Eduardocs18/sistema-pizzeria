@@ -7,28 +7,47 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-<body>
 
-    
+<body>
 
 <div class="sidebar">
 
     <div class="logo-container">
 
-    <img
-        src="{{ url_for('static', filename='img/logo.png') }}"
-        alt="Logo Pizzería"
-        class="logo"
-    >
+        <img
+            src="{{ url_for('static', filename='img/logo.png') }}"
+            alt="Logo Pizzería"
+            class="logo"
+        >
 
-</div>
+    </div>
 
     <ul>
-        <li onclick="mostrarSeccion('dashboard')">Inicio</li>
-        <li onclick="mostrarSeccion('inventario')">Inventario</li>
-        <li onclick="mostrarSeccion('ingresos')">Ingresos</li>
-        <li onclick="mostrarSeccion('gastos')">Gastos</li>
-        <li onclick="mostrarSeccion('pedidos')">Pedidos</li>
+
+        <li onclick="mostrarSeccion('dashboard')">
+            Inicio
+        </li>
+
+        <li onclick="mostrarSeccion('inventario')">
+            Inventario
+        </li>
+
+        <li onclick="mostrarSeccion('ingresos')">
+            Ingresos
+        </li>
+
+        <li onclick="mostrarSeccion('gastos')">
+            Gastos
+        </li>
+
+        <li onclick="mostrarSeccion('pedidos')">
+            Pedidos
+        </li>
+
+        <li>
+            <a href="/logout">Cerrar Sesión</a>
+        </li>
+
     </ul>
 
 </div>
@@ -40,134 +59,157 @@
 
         <div class="banner-bienvenida">
 
-    <div>
+            <div>
 
-        <h1>Bienvenido a Luifer Pizza</h1>
+                <h1>Bienvenido a Luifer Pizza</h1>
 
-        <p>
-            Sistema inteligente de gestión de inventario,
-            pedidos e ingresos.
-        </p>
+                <p>
+                    Sistema inteligente de gestión de inventario,
+                    pedidos e ingresos.
+                </p>
 
-    </div>
+            </div>
 
-</div>
+        </div>
 
         <h1>Resumen mensual</h1>
 
         <div class="cards">
 
             <div class="card">
+
                 <h3>Ingredientes</h3>
+
                 <p>{{ productos|length }}</p>
+
             </div>
 
             <div class="card">
+
                 <h3>Ingresos</h3>
+
                 <p>${{ total_ingresos }}</p>
+
             </div>
 
             <div class="card">
+
                 <h3>Gastos</h3>
+
                 <p>${{ total_gastos }}</p>
+
             </div>
 
             <div class="card">
+
                 <h3>Balance</h3>
+
                 <p>${{ balance }}</p>
+
             </div>
 
         </div>
 
         <div class="dashboard-grid">
 
-    <!-- PEDIDOS RECIENTES -->
-    <div class="dashboard-box">
+            <!-- PEDIDOS RECIENTES -->
+            <div class="dashboard-box">
 
-        <h2>Pedidos Recientes</h2>
+                <h2>Pedidos Recientes</h2>
 
-        <table>
+                <div class="tabla-responsive">
 
-            <thead>
-                <tr>
-                    <th>Cliente</th>
-                    <th>Pizza</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
+                    <table>
 
-            <tbody>
+                        <thead>
 
-                {% for pedido in pedidos[:5] %}
-                <tr>
+                            <tr>
 
-                    <td>{{ pedido.cliente }}</td>
+                                <th>Cliente</th>
+                                <th>Pizza</th>
+                                <th>Total</th>
 
-                    <td>{{ pedido.pizza_nombre }}</td>
+                            </tr>
 
-                    <td>${{ pedido.total }}</td>
+                        </thead>
 
-                </tr>
-                {% endfor %}
+                        <tbody>
 
-            </tbody>
+                            {% for pedido in pedidos[:5] %}
 
-        </table>
+                            <tr>
 
-    </div>
+                                <td>{{ pedido.cliente }}</td>
 
-    <!-- STOCK BAJO -->
-    <div class="dashboard-box">
+                                <td>{{ pedido.pizza_nombre }}</td>
 
-        <h2>Stock Bajo</h2>
+                                <td>${{ pedido.total }}</td>
 
-        <div class="stock-alertas">
+                            </tr>
 
-            {% for producto in productos %}
+                            {% endfor %}
 
-                {% if producto.stock < 1000 %}
+                        </tbody>
 
-                <div class="alerta-stock">
-
-                    <strong>{{ producto.nombre }}</strong>
-
-                    <span>
-                        {{ producto.stock }} {{ producto.categoria }}
-                    </span>
+                    </table>
 
                 </div>
 
-                {% endif %}
+            </div>
 
-            {% endfor %}
+            <!-- STOCK BAJO -->
+            <div class="dashboard-box">
+
+                <h2>Stock Bajo</h2>
+
+                <div class="stock-alertas">
+
+                    {% for producto in productos %}
+
+                        {% if producto.stock < 1000 %}
+
+                        <div class="alerta-stock">
+
+                            <strong>{{ producto.nombre }}</strong>
+
+                            <span>
+                                {{ producto.stock }} {{ producto.categoria }}
+                            </span>
+
+                        </div>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
 
         </div>
 
-    </div>
+        <!-- PIZZAS TOP -->
+        <div class="dashboard-box pizzas-top">
 
-</div>
+            <h2>Pizzas Más Vendidas</h2>
 
-<div class="dashboard-box pizzas-top">
+            <div class="top-pizzas">
 
-    <h2>Pizzas Más Vendidas</h2>
+                <div class="pizza-rank">
+                    Pizza Silvestrista
+                </div>
 
-    <div class="top-pizzas">
+                <div class="pizza-rank">
+                    Pizza Salvatore
+                </div>
 
-        <div class="pizza-rank">
-             Pizza  Silvestrista
+                <div class="pizza-rank">
+                    Pizza Jamón y Queso
+                </div>
+
+            </div>
+
         </div>
-
-        <div class="pizza-rank">
-             Pizza Salvatore
-        </div>
-
-        <div class="pizza-rank">
-             Pizza Jamon y Queso
-        </div>
-
-    </div>
-
-</div>
 
     </section>
 
@@ -182,13 +224,34 @@
 
         <form action="/agregar_producto" method="POST" class="formulario">
 
-            <input type="text" name="nombre" placeholder="Ingrediente" required>
+            <input
+                type="text"
+                name="nombre"
+                placeholder="Ingrediente"
+                required
+            >
 
-            <input type="text" name="categoria" placeholder="Unidad (g, ml, und)" required>
+            <input
+                type="text"
+                name="categoria"
+                placeholder="Unidad (g, ml, und)"
+                required
+            >
 
-            <input type="number" name="stock" placeholder="Cantidad" required>
+            <input
+                type="number"
+                name="stock"
+                placeholder="Cantidad"
+                required
+            >
 
-            <input type="number" step="0.01" name="precio" placeholder="Costo Unitario" required>
+            <input
+                type="number"
+                step="0.01"
+                name="precio"
+                placeholder="Costo Unitario"
+                required
+            >
 
             <button type="submit" class="btn">
                 Agregar Ingrediente
@@ -196,81 +259,102 @@
 
         </form>
 
-        <table>
+        <div class="tabla-responsive">
 
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Ingrediente</th>
-                    <th>Unidad</th>
-                    <th>Cantidad</th>
-                    <th>Costo Unitario</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
+            <table>
 
-            <tbody>
+                <thead>
 
-                {% for producto in productos %}
-                <tr>
+                    <tr>
 
-                    <td>{{ producto.id }}</td>
+                        <th>ID</th>
+                        <th>Ingrediente</th>
+                        <th>Unidad</th>
+                        <th>Cantidad</th>
+                        <th>Costo Unitario</th>
+                        <th>Acciones</th>
 
-                    <td>
-                        <form action="/editar_producto/{{ producto.id }}" method="POST">
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for producto in productos %}
+
+                    <tr>
+
+                        <td>{{ producto.id }}</td>
+
+                        <td>
+
+                            <form action="/editar_producto/{{ producto.id }}" method="POST">
+
+                                <input
+                                    type="text"
+                                    name="nombre"
+                                    value="{{ producto.nombre }}"
+                                >
+
+                        </td>
+
+                        <td>
 
                             <input
                                 type="text"
-                                name="nombre"
-                                value="{{ producto.nombre }}"
+                                name="categoria"
+                                value="{{ producto.categoria }}"
                             >
-                    </td>
 
-                    <td>
-                        <input
-                            type="text"
-                            name="categoria"
-                            value="{{ producto.categoria }}"
-                        >
-                    </td>
+                        </td>
 
-                    <td>
-                        <input
-                            type="number"
-                            name="stock"
-                            value="{{ producto.stock }}"
-                        >
-                    </td>
+                        <td>
 
-                    <td>
-                        <input
-                            type="number"
-                            step="0.01"
-                            name="precio"
-                            value="{{ producto.precio }}"
-                        >
-                    </td>
+                            <input
+                                type="number"
+                                name="stock"
+                                value="{{ producto.stock }}"
+                            >
 
-                    <td>
+                        </td>
 
-                        <button type="submit" class="btn-editar">
-                            Guardar
-                        </button>
+                        <td>
 
-                        <a href="/eliminar_producto/{{ producto.id }}" class="btn-eliminar">
-                            Eliminar
-                        </a>
+                            <input
+                                type="number"
+                                step="0.01"
+                                name="precio"
+                                value="{{ producto.precio }}"
+                            >
 
-                    </td>
+                        </td>
 
-                        </form>
+                        <td>
 
-                </tr>
-                {% endfor %}
+                            <button type="submit" class="btn-editar">
+                                Guardar
+                            </button>
 
-            </tbody>
+                            <a
+                                href="/eliminar_producto/{{ producto.id }}"
+                                class="btn-eliminar"
+                            >
+                                Eliminar
+                            </a>
 
-        </table>
+                        </td>
+
+                            </form>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </section>
 
@@ -278,7 +362,9 @@
     <section id="ingresos" class="seccion oculto">
 
         <div class="header-section">
+
             <h1>Ingresos</h1>
+
         </div>
 
         <form action="/agregar_ingreso" method="POST" class="formulario">
@@ -304,42 +390,55 @@
 
         </form>
 
-        <table>
+        <div class="tabla-responsive">
 
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Descripción</th>
-                    <th>Monto</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
+            <table>
 
-            <tbody>
+                <thead>
 
-                {% for ingreso in ingresos %}
-                <tr>
+                    <tr>
 
-                    <td>{{ ingreso.id }}</td>
-                    <td>{{ ingreso.descripcion }}</td>
-                    <td>${{ ingreso.monto }}</td>
-                    <td>{{ ingreso.fecha }}</td>
+                        <th>ID</th>
+                        <th>Descripción</th>
+                        <th>Monto</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
 
-                    <td>
+                    </tr>
 
-                        <a href="/eliminar_ingreso/{{ ingreso.id }}" class="btn-eliminar">
-                            Eliminar
-                        </a>
+                </thead>
 
-                    </td>
+                <tbody>
 
-                </tr>
-                {% endfor %}
+                    {% for ingreso in ingresos %}
 
-            </tbody>
+                    <tr>
 
-        </table>
+                        <td>{{ ingreso.id }}</td>
+                        <td>{{ ingreso.descripcion }}</td>
+                        <td>${{ ingreso.monto }}</td>
+                        <td>{{ ingreso.fecha }}</td>
+
+                        <td>
+
+                            <a
+                                href="/eliminar_ingreso/{{ ingreso.id }}"
+                                class="btn-eliminar"
+                            >
+                                Eliminar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </section>
 
@@ -347,7 +446,9 @@
     <section id="gastos" class="seccion oculto">
 
         <div class="header-section">
+
             <h1>Gastos</h1>
+
         </div>
 
         <form action="/agregar_gasto" method="POST" class="formulario">
@@ -373,133 +474,159 @@
 
         </form>
 
-        <table>
+        <div class="tabla-responsive">
 
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Descripción</th>
-                    <th>Monto</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
+            <table>
 
-            <tbody>
+                <thead>
 
-                {% for gasto in gastos %}
-                <tr>
+                    <tr>
 
-                    <td>{{ gasto.id }}</td>
-                    <td>{{ gasto.descripcion }}</td>
-                    <td>${{ gasto.monto }}</td>
-                    <td>{{ gasto.fecha }}</td>
+                        <th>ID</th>
+                        <th>Descripción</th>
+                        <th>Monto</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
 
-                    <td>
+                    </tr>
 
-                        <a href="/eliminar_gasto/{{ gasto.id }}" class="btn-eliminar">
-                            Eliminar
-                        </a>
+                </thead>
 
-                    </td>
+                <tbody>
 
-                </tr>
-                {% endfor %}
+                    {% for gasto in gastos %}
 
-            </tbody>
+                    <tr>
 
-        </table>
+                        <td>{{ gasto.id }}</td>
+                        <td>{{ gasto.descripcion }}</td>
+                        <td>${{ gasto.monto }}</td>
+                        <td>{{ gasto.fecha }}</td>
+
+                        <td>
+
+                            <a
+                                href="/eliminar_gasto/{{ gasto.id }}"
+                                class="btn-eliminar"
+                            >
+                                Eliminar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </section>
 
     <!-- PEDIDOS -->
-<section id="pedidos" class="seccion oculto">
+    <section id="pedidos" class="seccion oculto">
 
-    <div class="header-section">
-        <h1>Pedidos</h1>
-    </div>
+        <div class="header-section">
 
-    <form action="/agregar_pedido" method="POST" class="formulario">
+            <h1>Pedidos</h1>
 
-        <input
-            type="text"
-            name="cliente"
-            placeholder="Cliente"
-            required
-        >
+        </div>
 
-        <select name="pizza_id" required>
+        <form action="/agregar_pedido" method="POST" class="formulario">
 
-            {% for pizza in pizzas %}
-            <option value="{{ pizza.id }}">
-                {{ pizza.nombre }}
-            </option>
-            {% endfor %}
+            <input
+                type="text"
+                name="cliente"
+                placeholder="Cliente"
+                required
+            >
 
-        </select>
+            <select name="pizza_id" required>
 
-        <select name="tamano" required>
+                {% for pizza in pizzas %}
 
-            <option>Personal</option>
-            <option>Small</option>
-            <option>Mediana</option>
-            <option>Familiar</option>
+                <option value="{{ pizza.id }}">
+                    {{ pizza.nombre }}
+                </option>
 
-        </select>
+                {% endfor %}
 
-        <input
-            type="number"
-            name="cantidad"
-            placeholder="Cantidad"
-            required
-        >
+            </select>
 
-        <button type="submit" class="btn">
-            Registrar Pedido
-        </button>
+            <select name="tamano" required>
 
-    </form>
+                <option>Personal</option>
+                <option>Small</option>
+                <option>Mediana</option>
+                <option>Familiar</option>
 
-    <table>
+            </select>
 
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Pizza</th>
-                <th>Tamaño</th>
-                <th>Cantidad</th>
-                <th>Total</th>
-                <th>Fecha</th>
-            </tr>
-        </thead>
+            <input
+                type="number"
+                name="cantidad"
+                placeholder="Cantidad"
+                required
+            >
 
-        <tbody>
+            <button type="submit" class="btn">
+                Registrar Pedido
+            </button>
 
-            {% for pedido in pedidos %}
-            <tr>
+        </form>
 
-                <td>{{ pedido.id }}</td>
-                <td>{{ pedido.cliente }}</td>
-                <td>{{ pedido.pizza_nombre }}</td>
-                <td>{{ pedido.tamano }}</td>
-                <td>{{ pedido.cantidad }}</td>
-                <td>${{ pedido.total }}</td>
-                <td>{{ pedido.fecha }}</td>
+        <div class="tabla-responsive">
 
-            </tr>
-            {% endfor %}
+            <table>
 
-        </tbody>
+                <thead>
 
-    </table>
+                    <tr>
 
-</section>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Pizza</th>
+                        <th>Tamaño</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                        <th>Fecha</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for pedido in pedidos %}
+
+                    <tr>
+
+                        <td>{{ pedido.id }}</td>
+                        <td>{{ pedido.cliente }}</td>
+                        <td>{{ pedido.pizza_nombre }}</td>
+                        <td>{{ pedido.tamano }}</td>
+                        <td>{{ pedido.cantidad }}</td>
+                        <td>${{ pedido.total }}</td>
+                        <td>{{ pedido.fecha }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
 
 </div>
 
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-
 
 </body>
 </html>
