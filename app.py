@@ -227,24 +227,30 @@ def index():
     connection.close()
 
     return render_template(
-        'index.html',
-        productos=productos,
-        ingresos=ingresos,
-        gastos=gastos,
-        total_ingresos=total_ingresos,
-        total_gastos=total_gastos,
-        balance=balance,
-        pedidos=pedidos,
-        pizzas=pizzas,
+    'index.html',
 
-        filtro=filtro,
-        ingresos_filtrados=ingresos_filtrados,
-        gastos_filtrados=gastos_filtrados,
-        total_ingresos_filtrados=total_ingresos_filtrados,
-        total_gastos_filtrados=total_gastos_filtrados,
-        balance_filtrado=balance_filtrado,
-        pizzas_top=pizzas_top,
-    )
+    productos=productos,
+    ingresos=ingresos,
+    gastos=gastos,
+
+    total_ingresos=total_ingresos,
+    total_gastos=total_gastos,
+    balance=balance,
+
+    pedidos=pedidos,
+    pizzas=pizzas,
+
+    filtro=filtro,
+
+    ingresos_filtrados=ingresos_filtrados,
+    gastos_filtrados=gastos_filtrados,
+
+    total_ingresos_filtrados=total_ingresos_filtrados,
+    total_gastos_filtrados=total_gastos_filtrados,
+    balance_filtrado=balance_filtrado,
+
+    pizzas_top=pizzas_top
+)
 
 # =========================
 # PRODUCTOS
@@ -278,7 +284,7 @@ def agregar_producto():
     connection.commit()
     connection.close()
 
-    return redirect('/')
+    return redirect('/#inventario')
 
 @app.route('/editar_producto/<int:id>', methods=['POST'])
 def editar_producto(id):
@@ -311,7 +317,7 @@ def editar_producto(id):
     connection.commit()
     connection.close()
 
-    return redirect('/')
+    return redirect('/#inventario')
 
 @app.route('/eliminar_producto/<int:id>')
 def eliminar_producto(id):
@@ -329,7 +335,7 @@ def eliminar_producto(id):
     connection.commit()
     connection.close()
 
-    return redirect('/')
+    return redirect('/#inventario')
 
 # =========================
 # INGRESOS
@@ -380,7 +386,7 @@ def eliminar_ingreso(id):
     connection.commit()
     connection.close()
 
-    return redirect('/')
+    return redirect('/#ingresos')
 
 # =========================
 # GASTOS
@@ -413,7 +419,7 @@ def agregar_gasto():
     connection.commit()
     connection.close()
 
-    return redirect('/')
+    return redirect('/#gastos')
 
 @app.route('/eliminar_gasto/<int:id>')
 def eliminar_gasto(id):
@@ -431,7 +437,7 @@ def eliminar_gasto(id):
     connection.commit()
     connection.close()
 
-    return redirect('/')
+    return redirect('/#gastos')
 
 # =========================
 # PEDIDOS
@@ -516,7 +522,7 @@ def agregar_pedido():
     connection.commit()
     connection.close()
 
-    return redirect('/')
+    return redirect('/#pedidos')
 
 # =========================
 # CONFIRMAR PEDIDO
@@ -539,7 +545,7 @@ def confirmar_pedido(id):
 
         connection.close()
 
-        return redirect('/')
+        return redirect('/#pedidos')
 
     pizza = connection.execute(
         'SELECT * FROM pizzas WHERE id = ?',
@@ -621,7 +627,7 @@ def confirmar_pedido(id):
     connection.commit()
     connection.close()
 
-    return redirect('/')
+    return redirect('/#pedidos')
 
 # =========================
 # CANCELAR PEDIDO
@@ -644,7 +650,13 @@ def cancelar_pedido(id):
     connection.commit()
     connection.close()
 
-    return redirect('/')
+    return redirect('/#pedidos')
+
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002)
+    app.run(
+    host='0.0.0.0',
+    port=5002,
+    debug=False
+)
