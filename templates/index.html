@@ -72,7 +72,7 @@
 
         </div>
 
-        <h1>Resumen mensual</h1>
+        <h1>Resumen Diario</h1>
 
         <div class="cards">
 
@@ -128,6 +128,7 @@
                                 <th>Cliente</th>
                                 <th>Pizza</th>
                                 <th>Total</th>
+                                <th>Estado</th>
 
                             </tr>
 
@@ -144,6 +145,8 @@
                                 <td>{{ pedido.pizza_nombre }}</td>
 
                                 <td>${{ pedido.total }}</td>
+
+                                <td>{{ pedido.estado }}</td>
 
                             </tr>
 
@@ -166,7 +169,7 @@
 
                     {% for producto in productos %}
 
-                        {% if producto.stock < 1000 %}
+                        {% if producto.stock < 10 %}
 
                         <div class="alerta-stock">
 
@@ -240,6 +243,7 @@
 
             <input
                 type="number"
+                step="0.01"
                 name="stock"
                 placeholder="Cantidad"
                 required
@@ -312,6 +316,7 @@
 
                             <input
                                 type="number"
+                                step="0.01"
                                 name="stock"
                                 value="{{ producto.stock }}"
                             >
@@ -358,6 +363,7 @@
 
     </section>
 
+    <!-- INGRESOS -->
     <section id="ingresos" class="seccion oculto">
 
         <div class="header-section">
@@ -441,6 +447,7 @@
 
     </section>
 
+    <!-- GASTOS -->
     <section id="gastos" class="seccion oculto">
 
         <div class="header-section">
@@ -524,6 +531,7 @@
 
     </section>
 
+    <!-- PEDIDOS -->
     <section id="pedidos" class="seccion oculto">
 
         <div class="header-section">
@@ -590,6 +598,8 @@
                         <th>Cantidad</th>
                         <th>Total</th>
                         <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
 
                     </tr>
 
@@ -608,6 +618,36 @@
                         <td>{{ pedido.cantidad }}</td>
                         <td>${{ pedido.total }}</td>
                         <td>{{ pedido.fecha }}</td>
+
+                        <td>
+                            {{ pedido.estado }}
+                        </td>
+
+                        <td>
+
+                            {% if pedido.estado == 'Pendiente' %}
+
+                                <a
+                                    href="/confirmar_pedido/{{ pedido.id }}"
+                                    class="btn-editar"
+                                >
+                                    Confirmar
+                                </a>
+
+                                <a
+                                    href="/cancelar_pedido/{{ pedido.id }}"
+                                    class="btn-eliminar"
+                                >
+                                    Cancelar
+                                </a>
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
 
                     </tr>
 

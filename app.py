@@ -84,13 +84,25 @@ def index():
         'SELECT * FROM pizzas'
     ).fetchall()
 
+    hoy = datetime.now().strftime('%Y-%m-%d')
+    
     total_ingresos = connection.execute(
-        'SELECT SUM(monto) FROM ingresos'
-    ).fetchone()[0]
-
+    '''
+    SELECT SUM(monto)
+    FROM ingresos
+    WHERE fecha = ?
+    ''',
+    (hoy,)
+).fetchone()[0]
+    
     total_gastos = connection.execute(
-        'SELECT SUM(monto) FROM gastos'
-    ).fetchone()[0]
+    '''
+    SELECT SUM(monto)
+    FROM gastos
+    WHERE fecha = ?
+    ''',
+    (hoy,)
+).fetchone()[0]
 
     connection.close()
 
@@ -290,9 +302,7 @@ def agregar_pedido():
         (pizza_id,)
     ).fetchone()
 
-    # =========================
     # PRECIOS
-    # =========================
 
     if tamano == 'Personal':
         precio_unitario = pizza['precio_personal']
@@ -310,27 +320,65 @@ def agregar_pedido():
 
     fecha = datetime.now().strftime('%Y-%m-%d')
 
-    # =========================
     # GUARDAR PEDIDO
-    # =========================
 
     connection.execute('''
         INSERT INTO pedidos
-        (cliente, pizza_id, tamano, cantidad, total, fecha)
+        (
+            cliente,
+            pizza_id,
+            tamano,
+            cantidad,
+            total,
+            fecha,
+            estado
+        )
 
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     ''', (
         cliente,
         pizza_id,
         tamano,
         cantidad,
         total,
-        fecha
+        fecha,
+        'Pendiente'
     ))
 
-    # =========================
+    connection.commit()
+    connection.close()
+
+    return redirect('/')
+
+# =========================
+# CONFIRMAR PEDIDO
+# =========================
+
+@app.route('/confirmar_pedido/<int:id>')
+def confirmar_pedido(id):
+
+    if 'usuario' not in session:
+        return redirect('/login')
+
+    connection = get_connection()
+
+    pedido = connection.execute(
+        'SELECT * FROM pedidos WHERE id = ?',
+        (id,)
+    ).fetchone()
+
+    if pedido['estado'] != 'Pendiente':
+
+        connection.close()
+
+        return redirect('/')
+
+    pizza = connection.execute(
+        'SELECT * FROM pizzas WHERE id = ?',
+        (pedido['pizza_id'],)
+    ).fetchone()
+
     # REGISTRAR INGRESO
-    # =========================
 
     descripcion = f'Pedido - {pizza["nombre"]}'
 
@@ -341,13 +389,11 @@ def agregar_pedido():
         VALUES (?, ?, ?)
     ''', (
         descripcion,
-        total,
-        fecha
+        pedido['total'],
+        pedido['fecha']
     ))
 
-    # =========================
     # MULTIPLICADORES
-    # =========================
 
     multiplicadores = {
         'Personal': 0.7,
@@ -356,27 +402,23 @@ def agregar_pedido():
         'Familiar': 2.2
     }
 
-    multiplicador = multiplicadores[tamano]
+    multiplicador = multiplicadores[pedido['tamano']]
 
-    # =========================
     # RECETAS
-    # =========================
 
     recetas = connection.execute(
         'SELECT * FROM recetas WHERE pizza_id = ?',
-        (pizza_id,)
+        (pedido['pizza_id'],)
     ).fetchall()
 
-    # =========================
     # DESCONTAR INVENTARIO
-    # =========================
 
     for receta in recetas:
 
         cantidad_usada = (
             receta['cantidad']
             * multiplicador
-            * cantidad
+            * pedido['cantidad']
         )
 
         connection.execute('''
@@ -387,6 +429,37 @@ def agregar_pedido():
             cantidad_usada,
             receta['ingrediente_id']
         ))
+
+    # CAMBIAR ESTADO
+
+    connection.execute('''
+        UPDATE pedidos
+        SET estado = 'Confirmado'
+        WHERE id = ?
+    ''', (id,))
+
+    connection.commit()
+    connection.close()
+
+    return redirect('/')
+
+# =========================
+# CANCELAR PEDIDO
+# =========================
+
+@app.route('/cancelar_pedido/<int:id>')
+def cancelar_pedido(id):
+
+    if 'usuario' not in session:
+        return redirect('/login')
+
+    connection = get_connection()
+
+    connection.execute('''
+        UPDATE pedidos
+        SET estado = 'Cancelado'
+        WHERE id = ?
+    ''', (id,))
 
     connection.commit()
     connection.close()
