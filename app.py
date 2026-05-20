@@ -7,7 +7,7 @@ from flask import (
 )
 
 from database import get_connection
-from datetime import datetime
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -64,11 +64,11 @@ def index():
     ).fetchall()
 
     ingresos = connection.execute(
-        'SELECT * FROM ingresos'
+        'SELECT * FROM ingresos ORDER BY id DESC'
     ).fetchall()
 
     gastos = connection.execute(
-        'SELECT * FROM gastos'
+        'SELECT * FROM gastos ORDER BY id DESC'
     ).fetchall()
 
     pedidos = connection.execute(
@@ -84,8 +84,12 @@ def index():
         'SELECT * FROM pizzas'
     ).fetchall()
 
+    # =========================
+    # DASHBOARD DIARIO
+    # =========================
+
     hoy = datetime.now().strftime('%Y-%m-%d')
-    
+
     total_ingresos = connection.execute(
     '''
     SELECT SUM(monto)
@@ -93,8 +97,8 @@ def index():
     WHERE fecha = ?
     ''',
     (hoy,)
-).fetchone()[0]
-    
+    ).fetchone()[0]
+
     total_gastos = connection.execute(
     '''
     SELECT SUM(monto)
@@ -102,14 +106,125 @@ def index():
     WHERE fecha = ?
     ''',
     (hoy,)
-).fetchone()[0]
-
-    connection.close()
+    ).fetchone()[0]
 
     total_ingresos = total_ingresos or 0
     total_gastos = total_gastos or 0
 
     balance = total_ingresos - total_gastos
+
+    # =========================
+    # FILTRO REPORTES
+    # =========================
+
+    filtro = request.args.get('filtro', 'diario')
+
+    fecha_inicio = hoy
+
+    if filtro == 'semanal':
+
+        fecha_inicio = (
+            datetime.now() - timedelta(days=7)
+        ).strftime('%Y-%m-%d')
+
+    elif filtro == 'quincenal':
+
+        fecha_inicio = (
+            datetime.now() - timedelta(days=15)
+        ).strftime('%Y-%m-%d')
+
+    elif filtro == 'mensual':
+
+        fecha_inicio = (
+            datetime.now() - timedelta(days=30)
+        ).strftime('%Y-%m-%d')
+
+    # =========================
+    # INGRESOS FILTRADOS
+    # =========================
+
+    ingresos_filtrados = connection.execute(
+    '''
+    SELECT *
+    FROM ingresos
+    WHERE fecha >= ?
+    ORDER BY fecha DESC
+    ''',
+    (fecha_inicio,)
+    ).fetchall()
+
+    total_ingresos_filtrados = connection.execute(
+    '''
+    SELECT SUM(monto)
+    FROM ingresos
+    WHERE fecha >= ?
+    ''',
+    (fecha_inicio,)
+    ).fetchone()[0]
+
+    # =========================
+    # GASTOS FILTRADOS
+    # =========================
+
+    gastos_filtrados = connection.execute(
+    '''
+    SELECT *
+    FROM gastos
+    WHERE fecha >= ?
+    ORDER BY fecha DESC
+    ''',
+    (fecha_inicio,)
+    ).fetchall()
+
+    total_gastos_filtrados = connection.execute(
+    '''
+    SELECT SUM(monto)
+    FROM gastos
+    WHERE fecha >= ?
+    ''',
+    (fecha_inicio,)
+    ).fetchone()[0]
+
+    # =========================
+    # PIZZAS MÁS VENDIDAS
+    # =========================
+
+    pizzas_top = connection.execute(
+    '''
+    SELECT pizzas.nombre,
+           SUM(pedidos.cantidad) AS total_vendidas
+
+    FROM pedidos
+
+    JOIN pizzas
+    ON pedidos.pizza_id = pizzas.id
+
+    WHERE pedidos.estado = 'Confirmado'
+    AND pedidos.fecha >= ?
+
+    GROUP BY pizzas.nombre
+
+    ORDER BY total_vendidas DESC
+
+    LIMIT 5
+    ''',
+    (fecha_inicio,)
+    ).fetchall()
+
+    total_ingresos_filtrados = (
+        total_ingresos_filtrados or 0
+    )
+
+    total_gastos_filtrados = (
+        total_gastos_filtrados or 0
+    )
+
+    balance_filtrado = (
+        total_ingresos_filtrados
+        - total_gastos_filtrados
+    )
+
+    connection.close()
 
     return render_template(
         'index.html',
@@ -121,6 +236,14 @@ def index():
         balance=balance,
         pedidos=pedidos,
         pizzas=pizzas,
+
+        filtro=filtro,
+        ingresos_filtrados=ingresos_filtrados,
+        gastos_filtrados=gastos_filtrados,
+        total_ingresos_filtrados=total_ingresos_filtrados,
+        total_gastos_filtrados=total_gastos_filtrados,
+        balance_filtrado=balance_filtrado,
+        pizzas_top=pizzas_top,
     )
 
 # =========================
@@ -141,9 +264,16 @@ def agregar_producto():
     connection = get_connection()
 
     connection.execute('''
-        INSERT INTO productos (nombre, categoria, stock, precio)
+        INSERT INTO productos
+        (nombre, categoria, stock, precio)
+
         VALUES (?, ?, ?, ?)
-    ''', (nombre, categoria, stock, precio))
+    ''', (
+        nombre,
+        categoria,
+        stock,
+        precio
+    ))
 
     connection.commit()
     connection.close()
@@ -165,9 +295,18 @@ def editar_producto(id):
 
     connection.execute('''
         UPDATE productos
-        SET nombre = ?, categoria = ?, stock = ?, precio = ?
+        SET nombre = ?,
+            categoria = ?,
+            stock = ?,
+            precio = ?
         WHERE id = ?
-    ''', (nombre, categoria, stock, precio, id))
+    ''', (
+        nombre,
+        categoria,
+        stock,
+        precio,
+        id
+    ))
 
     connection.commit()
     connection.close()
@@ -204,14 +343,21 @@ def agregar_ingreso():
 
     descripcion = request.form['descripcion']
     monto = request.form['monto']
+
     fecha = datetime.now().strftime('%Y-%m-%d')
 
     connection = get_connection()
 
     connection.execute('''
-        INSERT INTO ingresos (descripcion, monto, fecha)
+        INSERT INTO ingresos
+        (descripcion, monto, fecha)
+
         VALUES (?, ?, ?)
-    ''', (descripcion, monto, fecha))
+    ''', (
+        descripcion,
+        monto,
+        fecha
+    ))
 
     connection.commit()
     connection.close()
@@ -248,14 +394,21 @@ def agregar_gasto():
 
     descripcion = request.form['descripcion']
     monto = request.form['monto']
+
     fecha = datetime.now().strftime('%Y-%m-%d')
 
     connection = get_connection()
 
     connection.execute('''
-        INSERT INTO gastos (descripcion, monto, fecha)
+        INSERT INTO gastos
+        (descripcion, monto, fecha)
+
         VALUES (?, ?, ?)
-    ''', (descripcion, monto, fecha))
+    ''', (
+        descripcion,
+        monto,
+        fecha
+    ))
 
     connection.commit()
     connection.close()
@@ -291,9 +444,16 @@ def agregar_pedido():
         return redirect('/login')
 
     cliente = request.form['cliente']
-    pizza_id = int(request.form['pizza_id'])
+
+    pizza_id = int(
+        request.form['pizza_id']
+    )
+
     tamano = request.form['tamano']
-    cantidad = int(request.form['cantidad'])
+
+    cantidad = int(
+        request.form['cantidad']
+    )
 
     connection = get_connection()
 
@@ -302,25 +462,33 @@ def agregar_pedido():
         (pizza_id,)
     ).fetchone()
 
+    # =========================
     # PRECIOS
+    # =========================
 
     if tamano == 'Personal':
+
         precio_unitario = pizza['precio_personal']
 
     elif tamano == 'Small':
+
         precio_unitario = pizza['precio_small']
 
     elif tamano == 'Mediana':
+
         precio_unitario = pizza['precio_mediana']
 
     else:
+
         precio_unitario = pizza['precio_familiar']
 
     total = precio_unitario * cantidad
 
     fecha = datetime.now().strftime('%Y-%m-%d')
 
+    # =========================
     # GUARDAR PEDIDO
+    # =========================
 
     connection.execute('''
         INSERT INTO pedidos
@@ -378,7 +546,9 @@ def confirmar_pedido(id):
         (pedido['pizza_id'],)
     ).fetchone()
 
+    # =========================
     # REGISTRAR INGRESO
+    # =========================
 
     descripcion = f'Pedido - {pizza["nombre"]}'
 
@@ -393,7 +563,9 @@ def confirmar_pedido(id):
         pedido['fecha']
     ))
 
+    # =========================
     # MULTIPLICADORES
+    # =========================
 
     multiplicadores = {
         'Personal': 0.7,
@@ -402,16 +574,22 @@ def confirmar_pedido(id):
         'Familiar': 2.2
     }
 
-    multiplicador = multiplicadores[pedido['tamano']]
+    multiplicador = multiplicadores[
+        pedido['tamano']
+    ]
 
+    # =========================
     # RECETAS
+    # =========================
 
     recetas = connection.execute(
         'SELECT * FROM recetas WHERE pizza_id = ?',
         (pedido['pizza_id'],)
     ).fetchall()
 
+    # =========================
     # DESCONTAR INVENTARIO
+    # =========================
 
     for receta in recetas:
 
@@ -430,7 +608,9 @@ def confirmar_pedido(id):
             receta['ingrediente_id']
         ))
 
+    # =========================
     # CAMBIAR ESTADO
+    # =========================
 
     connection.execute('''
         UPDATE pedidos

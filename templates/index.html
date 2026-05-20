@@ -1,3 +1,5 @@
+<!-- index.html COMPLETO -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -42,6 +44,10 @@
 
         <li onclick="mostrarSeccion('pedidos')">
             Pedidos
+        </li>
+
+        <li onclick="mostrarSeccion('reportes')">
+            Reportes
         </li>
 
         <li>
@@ -198,17 +204,19 @@
 
             <div class="top-pizzas">
 
-                <div class="pizza-rank">
-                    Pizza Silvestrista
-                </div>
+                {% for pizza in pizzas_top %}
 
                 <div class="pizza-rank">
-                    Pizza Salvatore
+
+                    {{ pizza.nombre }}
+
+                    <br><br>
+
+                    {{ pizza.total_vendidas }} vendidas
+
                 </div>
 
-                <div class="pizza-rank">
-                    Pizza Jamón y Queso
-                </div>
+                {% endfor %}
 
             </div>
 
@@ -656,6 +664,207 @@
                 </tbody>
 
             </table>
+
+        </div>
+
+    </section>
+
+    <!-- REPORTES -->
+    <section id="reportes" class="seccion oculto">
+
+        <div class="header-section">
+
+            <h1>Reportes del Negocio</h1>
+
+        </div>
+
+        <form method="GET" action="/" class="formulario">
+
+            <select name="filtro">
+
+                <option value="diario"
+                    {% if filtro == 'diario' %}
+                    selected
+                    {% endif %}
+                >
+                    Diario
+                </option>
+
+                <option value="semanal"
+                    {% if filtro == 'semanal' %}
+                    selected
+                    {% endif %}
+                >
+                    Semanal
+                </option>
+
+                <option value="quincenal"
+                    {% if filtro == 'quincenal' %}
+                    selected
+                    {% endif %}
+                >
+                    Quincenal
+                </option>
+
+                <option value="mensual"
+                    {% if filtro == 'mensual' %}
+                    selected
+                    {% endif %}
+                >
+                    Mensual
+                </option>
+
+            </select>
+
+            <button type="submit" class="btn">
+                Filtrar
+            </button>
+
+        </form>
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h3>Ingresos</h3>
+
+                <p>${{ total_ingresos_filtrados }}</p>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Gastos</h3>
+
+                <p>${{ total_gastos_filtrados }}</p>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Balance</h3>
+
+                <p>${{ balance_filtrado }}</p>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="dashboard-box">
+
+            <h2>Pizzas Más Vendidas</h2>
+
+            <div class="top-pizzas">
+
+                {% for pizza in pizzas_top %}
+
+                <div class="pizza-rank">
+
+                    {{ pizza.nombre }}
+
+                    <br><br>
+
+                    {{ pizza.total_vendidas }} vendidas
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="dashboard-box">
+
+            <h2>Ingresos Filtrados</h2>
+
+            <div class="tabla-responsive">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Descripción</th>
+                            <th>Monto</th>
+                            <th>Fecha</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for ingreso in ingresos_filtrados %}
+
+                        <tr>
+
+                            <td>{{ ingreso.descripcion }}</td>
+
+                            <td>${{ ingreso.monto }}</td>
+
+                            <td>{{ ingreso.fecha }}</td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="dashboard-box">
+
+            <h2>Gastos Filtrados</h2>
+
+            <div class="tabla-responsive">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Descripción</th>
+                            <th>Monto</th>
+                            <th>Fecha</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for gasto in gastos_filtrados %}
+
+                        <tr>
+
+                            <td>{{ gasto.descripcion }}</td>
+
+                            <td>${{ gasto.monto }}</td>
+
+                            <td>{{ gasto.fecha }}</td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
