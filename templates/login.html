@@ -50,6 +50,14 @@
                 Ingresar
             </button>
 
+            {% if error %}
+
+            <p class="error-login">
+                {{ error }}
+            </p>
+            
+            {% endif %}
+
         </form>
 
     </div>

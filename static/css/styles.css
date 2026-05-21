@@ -22,10 +22,6 @@ body{
     min-height: 100vh;
 }
 
-/* =========================
-SIDEBAR
-========================= */
-
 .sidebar{
     width: 260px;
     min-height: 100vh;
@@ -80,10 +76,6 @@ SIDEBAR
     display: block;
 }
 
-/* =========================
-MAIN CONTENT
-========================= */
-
 .main-content{
     flex: 1;
     padding: 30px;
@@ -107,10 +99,6 @@ MAIN CONTENT
 .oculto{
     display: none;
 }
-
-/* =========================
-BANNER
-========================= */
 
 .banner-bienvenida{
     background:
@@ -140,10 +128,6 @@ BANNER
     opacity: 0.9;
 }
 
-/* =========================
-CARDS
-========================= */
-
 .cards{
     display: flex;
     gap: 20px;
@@ -169,10 +153,6 @@ CARDS
 
     box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
 }
-
-/* =========================
-DASHBOARD
-========================= */
 
 .dashboard-grid{
     display: grid;
@@ -200,10 +180,6 @@ DASHBOARD
     margin-bottom: 20px;
 }
 
-/* =========================
-STOCK ALERTAS
-========================= */
-
 .stock-alertas{
     display: flex;
     flex-direction: column;
@@ -226,10 +202,6 @@ STOCK ALERTAS
     gap: 10px;
 }
 
-/* =========================
-TOP PIZZAS
-========================= */
-
 .pizzas-top{
     margin-top: 30px;
 }
@@ -251,10 +223,6 @@ TOP PIZZAS
 
     font-weight: bold;
 }
-
-/* =========================
-FORMULARIOS
-========================= */
 
 .formulario{
     display: flex;
@@ -285,10 +253,6 @@ FORMULARIOS
 .formulario select option{
     color: black;
 }
-
-/* =========================
-BOTONES
-========================= */
 
 .btn{
     background-color: #ef4444;
@@ -358,10 +322,6 @@ BOTONES
     background-color: #dc2626;
 }
 
-/* =========================
-TABLAS
-========================= */
-
 .tabla-responsive{
     width: 100%;
     overflow-x: auto;
@@ -402,8 +362,6 @@ table td{
     vertical-align: middle;
 }
 
-/* SOLO PARA TABLA DE PEDIDOS */
-
 #pedidos table{
     min-width: 1000px;
 }
@@ -411,8 +369,6 @@ table td{
 #pedidos td{
     white-space: nowrap;
 }
-
-/* TABLA PEDIDOS RECIENTES NORMAL */
 
 #dashboard table{
     min-width: 100%;
@@ -422,8 +378,6 @@ table td{
     white-space: normal;
 }
 
-/* INPUTS EN TABLAS */
-
 table input{
     width: 100%;
     padding: 8px;
@@ -432,10 +386,6 @@ table input{
     border: none;
 }
 
-/* =========================
-HEADER
-========================= */
-
 .header-section{
     display: flex;
     justify-content: space-between;
@@ -443,10 +393,6 @@ HEADER
 
     margin-bottom: 20px;
 }
-
-/* =========================
-LOGIN
-========================= */
 
 .login-body{
     display: flex;
@@ -517,10 +463,6 @@ LOGIN
 
     cursor: pointer;
 }
-
-/* =========================
-RESPONSIVE
-========================= */
 
 @media(max-width: 992px){
 
@@ -616,4 +558,21 @@ RESPONSIVE
     #pedidos table{
         min-width: 850px;
     }
+}
+
+.error-login{
+
+    margin-top: 15px;
+
+    background: rgba(239,68,68,0.2);
+
+    border: 1px solid #ef4444;
+
+    color: #fecaca;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
 }

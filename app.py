@@ -16,12 +16,12 @@ app.secret_key = 'luciferpizza123'
 USUARIO = 'admin'
 PASSWORD = 'LuiferPizza2026#'
 
-# =========================
 # LOGIN
-# =========================
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+
+    error = None
 
     if request.method == 'POST':
 
@@ -34,11 +34,16 @@ def login():
 
             return redirect('/')
 
-    return render_template('login.html')
+        else:
 
-# =========================
+            error = 'Usuario o contraseña incorrectos'
+
+    return render_template(
+        'login.html',
+        error=error
+    )
+
 # LOGOUT
-# =========================
 
 @app.route('/logout')
 def logout():
@@ -47,9 +52,7 @@ def logout():
 
     return redirect('/login')
 
-# =========================
 # DASHBOARD
-# =========================
 
 @app.route('/')
 def index():
@@ -84,9 +87,7 @@ def index():
         'SELECT * FROM pizzas'
     ).fetchall()
 
-    # =========================
     # DASHBOARD DIARIO
-    # =========================
 
     hoy = datetime.now().strftime('%Y-%m-%d')
 
@@ -113,9 +114,7 @@ def index():
 
     balance = total_ingresos - total_gastos
 
-    # =========================
-    # FILTRO REPORTES
-    # =========================
+# FILTRO REPORTES
 
     filtro = request.args.get('filtro', 'diario')
 
@@ -139,9 +138,7 @@ def index():
             datetime.now() - timedelta(days=30)
         ).strftime('%Y-%m-%d')
 
-    # =========================
-    # INGRESOS FILTRADOS
-    # =========================
+# INGRESOS FILTRADOS
 
     ingresos_filtrados = connection.execute(
     '''
@@ -162,9 +159,7 @@ def index():
     (fecha_inicio,)
     ).fetchone()[0]
 
-    # =========================
-    # GASTOS FILTRADOS
-    # =========================
+# GASTOS FILTRADOS
 
     gastos_filtrados = connection.execute(
     '''
@@ -185,9 +180,7 @@ def index():
     (fecha_inicio,)
     ).fetchone()[0]
 
-    # =========================
-    # PIZZAS MÁS VENDIDAS
-    # =========================
+# PIZZAS MÁS VENDIDAS
 
     pizzas_top = connection.execute(
     '''
@@ -252,9 +245,7 @@ def index():
     pizzas_top=pizzas_top
 )
 
-# =========================
 # PRODUCTOS
-# =========================
 
 @app.route('/agregar_producto', methods=['POST'])
 def agregar_producto():
@@ -337,9 +328,7 @@ def eliminar_producto(id):
 
     return redirect('/#inventario')
 
-# =========================
 # INGRESOS
-# =========================
 
 @app.route('/agregar_ingreso', methods=['POST'])
 def agregar_ingreso():
@@ -368,7 +357,7 @@ def agregar_ingreso():
     connection.commit()
     connection.close()
 
-    return redirect('/')
+    return redirect('/#ingresos')
 
 @app.route('/eliminar_ingreso/<int:id>')
 def eliminar_ingreso(id):
@@ -388,9 +377,7 @@ def eliminar_ingreso(id):
 
     return redirect('/#ingresos')
 
-# =========================
 # GASTOS
-# =========================
 
 @app.route('/agregar_gasto', methods=['POST'])
 def agregar_gasto():
@@ -439,9 +426,7 @@ def eliminar_gasto(id):
 
     return redirect('/#gastos')
 
-# =========================
 # PEDIDOS
-# =========================
 
 @app.route('/agregar_pedido', methods=['POST'])
 def agregar_pedido():
@@ -468,9 +453,7 @@ def agregar_pedido():
         (pizza_id,)
     ).fetchone()
 
-    # =========================
-    # PRECIOS
-    # =========================
+# PRECIOS
 
     if tamano == 'Personal':
 
@@ -492,9 +475,8 @@ def agregar_pedido():
 
     fecha = datetime.now().strftime('%Y-%m-%d')
 
-    # =========================
-    # GUARDAR PEDIDO
-    # =========================
+# GUARDAR PEDIDO
+
 
     connection.execute('''
         INSERT INTO pedidos
@@ -522,11 +504,10 @@ def agregar_pedido():
     connection.commit()
     connection.close()
 
-    return redirect('/#pedidos')
+    return redirect('/?seccion=pedidos')
 
-# =========================
+
 # CONFIRMAR PEDIDO
-# =========================
 
 @app.route('/confirmar_pedido/<int:id>')
 def confirmar_pedido(id):
@@ -552,9 +533,8 @@ def confirmar_pedido(id):
         (pedido['pizza_id'],)
     ).fetchone()
 
-    # =========================
-    # REGISTRAR INGRESO
-    # =========================
+# REGISTRAR INGRESO
+
 
     descripcion = f'Pedido - {pizza["nombre"]}'
 
@@ -569,9 +549,7 @@ def confirmar_pedido(id):
         pedido['fecha']
     ))
 
-    # =========================
-    # MULTIPLICADORES
-    # =========================
+# MULTIPLICADORES
 
     multiplicadores = {
         'Personal': 0.7,
@@ -584,18 +562,16 @@ def confirmar_pedido(id):
         pedido['tamano']
     ]
 
-    # =========================
-    # RECETAS
-    # =========================
+# RECETAS
+
 
     recetas = connection.execute(
         'SELECT * FROM recetas WHERE pizza_id = ?',
         (pedido['pizza_id'],)
     ).fetchall()
 
-    # =========================
-    # DESCONTAR INVENTARIO
-    # =========================
+
+# DESCONTAR INVENTARIO
 
     for receta in recetas:
 
@@ -614,9 +590,7 @@ def confirmar_pedido(id):
             receta['ingrediente_id']
         ))
 
-    # =========================
-    # CAMBIAR ESTADO
-    # =========================
+# CAMBIAR ESTADO
 
     connection.execute('''
         UPDATE pedidos
@@ -629,9 +603,8 @@ def confirmar_pedido(id):
 
     return redirect('/#pedidos')
 
-# =========================
+
 # CANCELAR PEDIDO
-# =========================
 
 @app.route('/cancelar_pedido/<int:id>')
 def cancelar_pedido(id):
