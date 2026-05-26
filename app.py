@@ -11,6 +11,14 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
+@app.template_filter('moneda')
+def moneda(valor):
+
+    if valor is None:
+        return "0"
+
+    return "{:,.0f}".format(valor).replace(",", ".")
+
 app.secret_key = 'luciferpizza123'
 
 USUARIO = 'admin'
@@ -442,6 +450,8 @@ def agregar_pedido():
 
     tamano = request.form['tamano']
 
+    adicional = request.form['adicional']
+
     cantidad = int(
         request.form['cantidad']
     )
@@ -452,6 +462,8 @@ def agregar_pedido():
         'SELECT * FROM pizzas WHERE id = ?',
         (pizza_id,)
     ).fetchone()
+
+    
 
 # PRECIOS
 
@@ -471,12 +483,55 @@ def agregar_pedido():
 
         precio_unitario = pizza['precio_familiar']
 
-    total = precio_unitario * cantidad
+
+    # ADICIONALES
+
+    valor_adicional = 0
+
+    if adicional == 'queso':
+
+        if tamano == 'Personal':
+            valor_adicional = 4000
+        elif tamano == 'Small':
+            valor_adicional = 8000
+        elif tamano == 'Mediana':
+            valor_adicional = 12000
+        else:
+            valor_adicional = 16000
+
+    elif adicional in ['papita', 'pollo']:
+
+        if tamano == 'Personal':
+            valor_adicional = 5000
+        elif tamano == 'Small':
+            valor_adicional = 10000
+        elif tamano == 'Mediana':
+            valor_adicional = 15000
+        else:
+            valor_adicional = 20000
+
+    elif adicional == 'vegetales':
+
+        if tamano == 'Personal':
+            valor_adicional = 4000
+        elif tamano == 'Small':
+            valor_adicional = 8000
+        elif tamano == 'Mediana':
+            valor_adicional = 12000
+        else:
+            valor_adicional = 16000
+
+
+    # TOTAL
+
+    total = (
+        precio_unitario +
+        valor_adicional
+    ) * cantidad
 
     fecha = datetime.now().strftime('%Y-%m-%d')
 
 # GUARDAR PEDIDO
-
 
     connection.execute('''
         INSERT INTO pedidos
@@ -504,8 +559,7 @@ def agregar_pedido():
     connection.commit()
     connection.close()
 
-    return redirect('/?seccion=pedidos')
-
+    return redirect('/#pedidos')
 
 # CONFIRMAR PEDIDO
 
@@ -564,7 +618,6 @@ def confirmar_pedido(id):
 
 # RECETAS
 
-
     recetas = connection.execute(
         'SELECT * FROM recetas WHERE pizza_id = ?',
         (pedido['pizza_id'],)
@@ -602,7 +655,6 @@ def confirmar_pedido(id):
     connection.close()
 
     return redirect('/#pedidos')
-
 
 # CANCELAR PEDIDO
 

@@ -58,7 +58,6 @@
 
 <div class="main-content">
 
-    <!-- DASHBOARD -->
     <section id="dashboard" class="seccion">
 
         <div class="banner-bienvenida">
@@ -68,8 +67,7 @@
                 <h1>Bienvenido a Luifer Pizza</h1>
 
                 <p>
-                    Sistema inteligente de gestión de inventario,
-                    pedidos e ingresos.
+                    Sistema de gestión administrativa para LuiferPizza. Aquí podrás controlar tu inventario, registrar ingresos y gastos, gestionar pedidos y generar reportes detallados para tomar las mejores decisiones.
                 </p>
 
             </div>
@@ -92,7 +90,7 @@
 
                 <h3>Ingresos</h3>
 
-                <p>${{ total_ingresos }}</p>
+                <p>${{ total_ingresos|moneda }}</p>
 
             </div>
 
@@ -100,7 +98,7 @@
 
                 <h3>Gastos</h3>
 
-                <p>${{ total_gastos }}</p>
+                <p>${{ total_gastos|moneda }}</p>
 
             </div>
 
@@ -108,7 +106,7 @@
 
                 <h3>Balance</h3>
 
-                <p>${{ balance }}</p>
+                <p>${{ balance|moneda }}</p>
 
             </div>
 
@@ -116,10 +114,9 @@
 
         <div class="dashboard-grid">
 
-            <!-- PEDIDOS RECIENTES -->
             <div class="dashboard-box">
 
-                <h2>Pedidos Recientes</h2>
+                <h2>Pedidos recientes</h2>
 
                 <div class="tabla-responsive">
 
@@ -148,7 +145,7 @@
 
                                 <td>{{ pedido.pizza_nombre }}</td>
 
-                                <td>${{ pedido.total }}</td>
+                                <td>${{ pedido.total|moneda }}</td>
 
                                 <td>{{ pedido.estado }}</td>
 
@@ -164,7 +161,6 @@
 
             </div>
 
-            <!-- STOCK BAJO -->
             <div class="dashboard-box">
 
                 <h2>Stock Bajo</h2>
@@ -195,7 +191,6 @@
 
         </div>
 
-        <!-- PIZZAS TOP -->
         <div class="dashboard-box pizzas-top">
 
             <h2>Pizzas Más Vendidas</h2>
@@ -222,7 +217,6 @@
 
     </section>
 
-    <!-- INVENTARIO -->
     <section id="inventario" class="seccion oculto">
 
         <div class="header-section">
@@ -369,7 +363,6 @@
 
     </section>
 
-    <!-- INGRESOS -->
     <section id="ingresos" class="seccion oculto">
 
         <div class="header-section">
@@ -427,7 +420,7 @@
 
                         <td>{{ ingreso.id }}</td>
                         <td>{{ ingreso.descripcion }}</td>
-                        <td>${{ ingreso.monto }}</td>
+                        <td>${{ ingreso.monto|moneda }}</td>
                         <td>{{ ingreso.fecha }}</td>
 
                         <td>
@@ -453,7 +446,6 @@
 
     </section>
 
-    <!-- GASTOS -->
     <section id="gastos" class="seccion oculto">
 
         <div class="header-section">
@@ -511,7 +503,7 @@
 
                         <td>{{ gasto.id }}</td>
                         <td>{{ gasto.descripcion }}</td>
-                        <td>${{ gasto.monto }}</td>
+                        <td>${{ gasto.monto|moneda }}</td>
                         <td>{{ gasto.fecha }}</td>
 
                         <td>
@@ -537,7 +529,6 @@
 
     </section>
 
-    <!-- PEDIDOS -->
     <section id="pedidos" class="seccion oculto">
 
         <div class="header-section">
@@ -555,7 +546,6 @@
                 required
             >
 
-            <!-- PIZZAS -->
             <select name="pizza_id" id="pizzaSelect" required>
 
                 {% for pizza in pizzas %}
@@ -574,13 +564,26 @@
 
             </select>
 
-            <!-- TAMAÑOS -->
             <select name="tamano" id="tamanoPizza" requir   d>
 
                 <option>Personal</option>
                 <option>Small</option>
                 <option>Mediana</option>
                 <option>Familiar</option>
+
+            </select>
+
+            <select name="adicional" id="adicionalPizza">
+
+            <option value="">Sin adicional</option>
+
+            <option value="queso">Queso</option>
+
+            <option value="papita">Papita y Salsa</option>
+
+            <option value="pollo">Pollo y Carnes</option>
+
+            <option value="vegetales">Vegetales y Maíz</option>
 
             </select>
 
@@ -592,10 +595,13 @@
             >
 
             <input
-                type="number"
-                name="cantidad"
-                placeholder="Cantidad"
-                required
+             type="number"
+            id="cantidadPizza"
+            name="cantidad"
+            placeholder="Cantidad"
+            value="1"
+            min="1"
+            required
             >
 
             <button type="submit" class="btn">
@@ -619,6 +625,7 @@
                         <th>Cantidad</th>
                         <th>Total</th>
                         <th>Fecha</th>
+                        <th>Adicional</th>
                         <th>Estado</th>
                         <th>Acciones</th>
 
@@ -637,8 +644,9 @@
                         <td>{{ pedido.pizza_nombre }}</td>
                         <td>{{ pedido.tamano }}</td>
                         <td>{{ pedido.cantidad }}</td>
-                        <td>${{ pedido.total }}</td>
+                        <td>${{ pedido.total|moneda }}</td>
                         <td>{{ pedido.fecha }}</td>
+                        <td>{{ pedido.adicional }}</td>
 
                         <td>
                             {{ pedido.estado }}
@@ -682,7 +690,6 @@
 
     </section>
 
-    <!-- REPORTES -->
     <section id="reportes" class="seccion oculto">
 
         <div class="header-section">
@@ -741,7 +748,7 @@
 
                 <h3>Ingresos</h3>
 
-                <p>${{ total_ingresos_filtrados }}</p>
+                <p>${{ total_ingresos_filtrados|moneda }}</p>
 
             </div>
 
@@ -749,7 +756,7 @@
 
                 <h3>Gastos</h3>
 
-                <p>${{ total_gastos_filtrados }}</p>
+                <p>${{ total_gastos_filtrados|moneda }}</p>
 
             </div>
 
@@ -757,7 +764,7 @@
 
                 <h3>Balance</h3>
 
-                <p>${{ balance_filtrado }}</p>
+                <p>${{ balance_filtrado|moneda }}</p>
 
             </div>
 
@@ -819,7 +826,7 @@
 
                             <td>{{ ingreso.descripcion }}</td>
 
-                            <td>${{ ingreso.monto }}</td>
+                            <td>${{ ingreso.monto|moneda }}</td>
 
                             <td>{{ ingreso.fecha }}</td>
 
@@ -865,7 +872,7 @@
 
                             <td>{{ gasto.descripcion }}</td>
 
-                            <td>${{ gasto.monto }}</td>
+                            <td>${{ gasto.monto|moneda }}</td>
 
                             <td>{{ gasto.fecha }}</td>
 
